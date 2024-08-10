@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ul>
+    <ul class="books-list">
       <BookItem
         v-for="(book, index) in books"
         :key="index"
@@ -32,3 +32,14 @@ export default {
   components: { BookItem }
 }
 </script>
+
+<style lang="scss">
+.books-list {
+  font-size: 1rem;
+  list-style-type: none;
+  margin: 1rem 0;
+  padding: 1rem;
+  color: #637892;
+  font-weight: 700;
+}
+</style>

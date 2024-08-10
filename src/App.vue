@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!-- heading -->
-    <header>
+    <header class="app__heading">
       <h1>Books<span>.app</span></h1>
     </header>
 
@@ -27,16 +27,7 @@ import BooksSummary from './components/BooksSummary'
 export default {
   name: 'App',
   data: () => ({
-    books: [
-      {
-        title: 'The Catcher in the Rye',
-        price: 20
-      },
-      {
-        title: 'Of Mice and Men',
-        price: 18
-      }
-    ]
+    books: []
   }),
   methods: {
     removeBook(index) {
@@ -44,11 +35,30 @@ export default {
     },
     addBook(book) {
       this.books.push({ ...book })
+    },
+    async fetchBooks() {
+      try {
+        const response = await fetch('https://api.itbook.store/1.0/new')
+        const data = await response.json()
+        data.books.slice(0, 3).map((book) =>
+          this.books.push({
+            title: book.title,
+            price: parseFloat(book.price.match(/[\d.]+/)).toFixed(2)
+          })
+        )
+      } catch (error) {
+        console.error('Error fetching books:', error)
+      }
     }
+  },
+  created() {
+    this.fetchBooks()
   },
   computed: {
     booksPrice() {
-      return this.books.reduce((total, book) => total + parseInt(book.price), 0)
+      return this.books
+        .reduce((total, book) => total + parseFloat(book.price), 0)
+        .toFixed(2)
     }
   },
   components: {
@@ -59,3 +69,20 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.app {
+  width: 100%;
+  max-width: 1000px;
+  padding: 2rem;
+  margin: 0 auto;
+
+  &__heading {
+    font-size: 3rem;
+    text-align: center;
+    span {
+      color: #5a58da;
+    }
+  }
+}
+</style>
